@@ -17,8 +17,9 @@ class LotteryPreviewThreeNoCell: UICollectionViewCell {
     @IBOutlet weak var lblno: UILabel!
 }
 class LotteryPreview3VC: BaseViewController,UITableViewDelegate, UITableViewDataSource, AKPickerViewDataSource, AKPickerViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate {
-    
-    
+    var delegate: LotteryInstructionVCDelegate! = nil
+
+    var arrMainDict:[[String:Any]] = [[:]]    
     var arrClubList:[[String:Any]] = [[String:Any]]()
     var selectedLotteryNumber: String = ""
     var strShare: String = ""
@@ -99,7 +100,7 @@ class LotteryPreview3VC: BaseViewController,UITableViewDelegate, UITableViewData
         super.viewDidLoad()
 //        mainDict = ["result_date": "2019-02-23 10:00:00", "image": "http://aimtechnowebs.com/lotteryapp/images/mega_million.png", "count": 0, "clubs": 0, "date": "TUE OCT30 18", "next_result_date": "2019-03-01 19:00:00", "created_at": "2019-02-12 12:29:18", "updated_at": "f", "name": "US Mega Millions", "status": "Active", "id": 2, "amount": "2.00M", "lotteryNumber": ["13 27 35 46 48 16", "20 31 39 46 49 01", "18 30 38 65 67 10"], "country": "USA"]
         getClub()
-        arrlotteryNumber = mainDict["lotteryNumber"] as! [String]
+    
         lblMyNumber.text = "1/\(arrlotteryNumber.count)"
         selectedLotteryNumber = arrlotteryNumber[0]
         tblView.reloadData()
@@ -401,16 +402,34 @@ class LotteryPreview3VC: BaseViewController,UITableViewDelegate, UITableViewData
         }
     }
     func uploadTicket() {
-        uploadmultipleimageapi(url: URL_NAME.add_lottery_ticket, maindict: ["user_id":"94","lottery_id":mainDict["id"]!,"lottery_result_date":mainDict["next_result_date"]!,"lottery_number[]":requestDict], imageKey: ["lottery_sign_image","lottery_image[0]","lottery_image[1]","lottery_image[2]"], imageValue: [(mainDict["lotteryImg"] as! [UIImage])[3],(mainDict["lotteryImg"] as! [UIImage])[0],(mainDict["lotteryImg"] as! [UIImage])[1],(mainDict["lotteryImg"] as! [UIImage])[2]]) { (dict) in
+        var dictTemp:[String:Any] = [:]
+        dictTemp["user_id"] = users.id
+        for i in 0..<arrMainDict.count
+        {
+            dictTemp["lottery_front_image[\(i)]"] = (arrMainDict[i]["lotteryImg"] as! [UIImage])[0]
+            dictTemp["lottery_back_image[\(i)]"] = (arrMainDict[i]["lotteryImg"] as! [UIImage])[2]
+            dictTemp["lottery_sign_image[\(i)]"] = (arrMainDict[i]["lotteryImg"] as! [UIImage])[3]
+            var arrlottery_detail:[[String:Any]] = []
+            for (key, value) in requestDict {
+                if (arrMainDict[i]["lotteryNumber"] as! [String]).contains(key)
+                {
+                    var tValue = value as! [String:Any]
+                    tValue["lottery_number"] = key
+                    arrlottery_detail.append(tValue)
+                    requestDict.removeValue(forKey: key)
+                }
+            }
+            dictTemp["lottery[\(i)]"] = ["lottery_id":arrMainDict[i]["id"] as! String,"lottery_detail":arrlottery_detail]
+        }
+        print(dictTemp)
+        uploadmultipleimageapi(url: URL_NAME.add_lottery_ticket, maindict: dictTemp) { (dict) in
             
             if dict.count != 0
             {
                 let alertWarning = UIAlertController(title: Constant_String.APP_NAME, message: (dict["message"] as! String), preferredStyle: .alert)
                 
                 let defaultAction = UIAlertAction(title: "OK", style: .default, handler: { (a) in
-                    let b = self.tabBarController?.viewControllers![0] as! UINavigationController
-                    b.popToRootViewController(animated: false)
-                    self.tabBarController?.selectedIndex = 0
+                    self.delegate.back()
                 })
                 alertWarning.addAction(defaultAction)
                 self.present(alertWarning, animated: true, completion: nil)
@@ -427,34 +446,19 @@ class LotteryPreview3VC: BaseViewController,UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "LotteryPreviewThreeCell", for: indexPath) as! LotteryPreviewThreeCell
-        var tempArr = (arrlotteryNumber[indexPath.row]).components(separatedBy: " ")
-        for i in 0..<tempArr.count
-        {
-            if i>5
-            {
-                tempArr.remove(at: i)
+         SVSetValues(SV: cell.stackView, number: arrlotteryNumber[indexPath.row], removeSpace: 130)
+        for td in arrMainDict {
+            let arrLotteryNumbers = td["lotteryNumber"] as! [String]
+            for tds in arrLotteryNumbers {
+                if tds == arrlotteryNumber[indexPath.row]
+                {
+                    cell.imgLotteryType.kf.indicatorType = .activity
+                    cell.imgLotteryType.kf.setImage(with: URL(string: td["image"] as! String), placeholder: UIImage(named: ""), options: nil, progressBlock: nil)
+                }
             }
         }
-        for i in 0..<cell.stackView.subviews.count
-        {
-            cell.stackView.subviews[i].isHidden = false
-            
-        }
-        cell.conSVWidth.constant = CGFloat(35 * tempArr.count)-5
-        for i in 0..<cell.stackView.subviews.count-tempArr.count
-        {
-            cell.stackView.subviews[i].isHidden = true
-            
-        }
-        for i in 0..<tempArr.count
-        {
-            
-            (cell.stackView.subviews[i+cell.stackView.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-        }
         
-        cell.imgLotteryType.kf.indicatorType = .activity
-        cell.imgLotteryType.kf.setImage(with: URL(string: mainDict["image"] as! String), placeholder: UIImage(named: ""), options: nil, progressBlock: nil)
-        SVSetValue(SV:cell.stackView)
+        
         
         cell.btnLotteryNumber.tag = 501+indexPath.row
         cell.btnLotteryNumber.isSelected = selectedLotteryNumber == arrlotteryNumber[indexPath.row]

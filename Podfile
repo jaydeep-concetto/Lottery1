@@ -16,6 +16,7 @@ target 'Lottery' do
   pod 'Toast'
   pod 'Firebase/Core'
   pod 'Firebase/MLVision'
+  pod 'Localize-Swift'
   # If using an on-device API:
   pod 'Firebase/MLVisionTextModel'
 

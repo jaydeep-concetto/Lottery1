@@ -7,8 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C1A877C225FCB6700A26D45 /* Basis_Grotesque_ProLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C1A877B225FCB6700A26D45 /* Basis_Grotesque_ProLight.ttf */; };
+		0C1A877E225FCB7100A26D45 /* Basis_Grotesque_ProMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C1A877D225FCB7100A26D45 /* Basis_Grotesque_ProMedium.ttf */; };
+		0C40DF4A225E5E68006E3B2D /* Basis_Grotesque_ProBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C40DF48225E5E68006E3B2D /* Basis_Grotesque_ProBold.ttf */; };
+		0C40DF4B225E5E68006E3B2D /* Basis_Grotesque_ProRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C40DF49225E5E68006E3B2D /* Basis_Grotesque_ProRegular.ttf */; };
+		0C67AB0D229503F500625FA3 /* c.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C67AB0C229503F400625FA3 /* c.png */; };
 		0C6FDAB22258CE5C004D7038 /* ProfileNC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6FDAB12258CE5C004D7038 /* ProfileNC.swift */; };
 		0C6FDAB42258F460004D7038 /* LotteryNC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6FDAB32258F460004D7038 /* LotteryNC.swift */; };
+		0C9D85FE225E686D00B894B2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C9D8600225E686D00B894B2 /* Localizable.strings */; };
 		0CA530F72259B58E00D40E3C /* LotteryInstructionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA530F62259B58E00D40E3C /* LotteryInstructionVC.swift */; };
 		0CC3012D225A6F9A006140AC /* Signature1VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC3012C225A6F9A006140AC /* Signature1VC.swift */; };
 		38269F644DCE19F4398C3F82 /* Pods_Lottery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E80C294675443576F3A691A /* Pods_Lottery.framework */; };
@@ -24,13 +30,6 @@
 		632DF50B2218794900F5267E /* CalculatorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632DF50A2218794800F5267E /* CalculatorVC.swift */; };
 		632DF50D221890AB00F5267E /* Group 60 copy 6.png in Resources */ = {isa = PBXBuildFile; fileRef = 632DF50C221890AA00F5267E /* Group 60 copy 6.png */; };
 		6347306A2223C30200A177D2 /* UserDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634730692223C30200A177D2 /* UserDetail.swift */; };
-		636B3479222CF8B200E19302 /* NotoSansKR-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3472222CF8B100E19302 /* NotoSansKR-Light.otf */; };
-		636B347A222CF8B200E19302 /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3473222CF8B100E19302 /* NotoSansKR-Bold.otf */; };
-		636B347B222CF8B200E19302 /* NotoSansKR-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3474222CF8B100E19302 /* NotoSansKR-Thin.otf */; };
-		636B347C222CF8B200E19302 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 636B3475222CF8B100E19302 /* OFL.txt */; };
-		636B347D222CF8B200E19302 /* NotoSansKR-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3476222CF8B100E19302 /* NotoSansKR-Black.otf */; };
-		636B347E222CF8B200E19302 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3477222CF8B100E19302 /* NotoSansKR-Medium.otf */; };
-		636B347F222CF8B200E19302 /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 636B3478222CF8B100E19302 /* NotoSansKR-Regular.otf */; };
 		637C2D0F22265DC300F982E3 /* EPSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 637C2D0E22265DC200F982E3 /* EPSignatureView.swift */; };
 		63A057922243667B00D07970 /* LyEditImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A057912243667B00D07970 /* LyEditImageView.swift */; };
 		63A07E882217D9DA00CDF363 /* OldWayVC .swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A07E872217D9D800CDF363 /* OldWayVC .swift */; };
@@ -139,8 +138,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C1A877B225FCB6700A26D45 /* Basis_Grotesque_ProLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Basis_Grotesque_ProLight.ttf; sourceTree = "<group>"; };
+		0C1A877D225FCB7100A26D45 /* Basis_Grotesque_ProMedium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Basis_Grotesque_ProMedium.ttf; sourceTree = "<group>"; };
+		0C40DF48225E5E68006E3B2D /* Basis_Grotesque_ProBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Basis_Grotesque_ProBold.ttf; sourceTree = "<group>"; };
+		0C40DF49225E5E68006E3B2D /* Basis_Grotesque_ProRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Basis_Grotesque_ProRegular.ttf; sourceTree = "<group>"; };
+		0C67AB0C229503F400625FA3 /* c.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = c.png; sourceTree = "<group>"; };
 		0C6FDAB12258CE5C004D7038 /* ProfileNC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNC.swift; sourceTree = "<group>"; };
 		0C6FDAB32258F460004D7038 /* LotteryNC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LotteryNC.swift; sourceTree = "<group>"; };
+		0C9D85FF225E686D00B894B2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C9D8601225E686F00B894B2 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0CA530F62259B58E00D40E3C /* LotteryInstructionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LotteryInstructionVC.swift; sourceTree = "<group>"; };
 		0CC3012C225A6F9A006140AC /* Signature1VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signature1VC.swift; sourceTree = "<group>"; };
 		58A3CF8FF90B00EA05322676 /* Pods-Lottery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lottery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lottery/Pods-Lottery.debug.xcconfig"; sourceTree = "<group>"; };
@@ -157,13 +163,6 @@
 		632DF50A2218794800F5267E /* CalculatorVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorVC.swift; sourceTree = "<group>"; };
 		632DF50C221890AA00F5267E /* Group 60 copy 6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Group 60 copy 6.png"; sourceTree = "<group>"; };
 		634730692223C30200A177D2 /* UserDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetail.swift; sourceTree = "<group>"; };
-		636B3472222CF8B100E19302 /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Light.otf"; sourceTree = "<group>"; };
-		636B3473222CF8B100E19302 /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Bold.otf"; sourceTree = "<group>"; };
-		636B3474222CF8B100E19302 /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Thin.otf"; sourceTree = "<group>"; };
-		636B3475222CF8B100E19302 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
-		636B3476222CF8B100E19302 /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Black.otf"; sourceTree = "<group>"; };
-		636B3477222CF8B100E19302 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Medium.otf"; sourceTree = "<group>"; };
-		636B3478222CF8B100E19302 /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Regular.otf"; sourceTree = "<group>"; };
 		637C2D0E22265DC200F982E3 /* EPSignatureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EPSignatureView.swift; sourceTree = "<group>"; };
 		63A057912243667B00D07970 /* LyEditImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LyEditImageView.swift; sourceTree = "<group>"; };
 		63A07E872217D9D800CDF363 /* OldWayVC .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OldWayVC .swift"; sourceTree = "<group>"; };
@@ -297,26 +296,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		0C40DF47225E5E68006E3B2D /* BasisgrotesquePro */ = {
+			isa = PBXGroup;
+			children = (
+				0C1A877D225FCB7100A26D45 /* Basis_Grotesque_ProMedium.ttf */,
+				0C1A877B225FCB6700A26D45 /* Basis_Grotesque_ProLight.ttf */,
+				0C40DF48225E5E68006E3B2D /* Basis_Grotesque_ProBold.ttf */,
+				0C40DF49225E5E68006E3B2D /* Basis_Grotesque_ProRegular.ttf */,
+			);
+			path = BasisgrotesquePro;
+			sourceTree = "<group>";
+		};
 		634730682223C30200A177D2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				634730692223C30200A177D2 /* UserDetail.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		636B3471222CF8B000E19302 /* Noto_Sans_KR */ = {
-			isa = PBXGroup;
-			children = (
-				636B3472222CF8B100E19302 /* NotoSansKR-Light.otf */,
-				636B3473222CF8B100E19302 /* NotoSansKR-Bold.otf */,
-				636B3474222CF8B100E19302 /* NotoSansKR-Thin.otf */,
-				636B3475222CF8B100E19302 /* OFL.txt */,
-				636B3476222CF8B100E19302 /* NotoSansKR-Black.otf */,
-				636B3477222CF8B100E19302 /* NotoSansKR-Medium.otf */,
-				636B3478222CF8B100E19302 /* NotoSansKR-Regular.otf */,
-			);
-			path = Noto_Sans_KR;
 			sourceTree = "<group>";
 		};
 		63B23D6022271DF00057E65D /* font */ = {
@@ -327,7 +323,7 @@
 				63B23D6322271DF00057E65D /* GloriaHallelujah.ttf */,
 				63B23D6422271DF00057E65D /* EBGaramond.ttf */,
 				63B23D6522271DF00057E65D /* HomemadeApple.ttf */,
-				636B3471222CF8B000E19302 /* Noto_Sans_KR */,
+				0C40DF47225E5E68006E3B2D /* BasisgrotesquePro */,
 			);
 			path = font;
 			sourceTree = "<group>";
@@ -437,6 +433,7 @@
 				63C3D38C2222FE9E00248A7C /* Group 1.png */,
 				632DF50C221890AA00F5267E /* Group 60 copy 6.png */,
 				63EFD26A2234F7AE001430E3 /* Shape 56.png */,
+				0C67AB0C229503F400625FA3 /* c.png */,
 				63EFD26C22351F95001430E3 /* Untitled.png */,
 				634730682223C30200A177D2 /* Model */,
 				63F2A792220FDFD800645688 /* Main.storyboard */,
@@ -470,6 +467,7 @@
 			isa = PBXGroup;
 			children = (
 				637C2D0E22265DC200F982E3 /* EPSignatureView.swift */,
+				0C9D8600225E686D00B894B2 /* Localizable.strings */,
 				63A057912243667B00D07970 /* LyEditImageView.swift */,
 				63B23D6022271DF00057E65D /* font */,
 				63F2A7BF220FE0D300645688 /* Extension */,
@@ -632,6 +630,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 63F2A782220FDFD800645688;
 			productRefGroup = 63F2A78C220FDFD800645688 /* Products */;
@@ -650,27 +649,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				636B347C222CF8B200E19302 /* OFL.txt in Resources */,
 				63B23D6822271DF10057E65D /* GloriaHallelujah.ttf in Resources */,
 				63B23D6A22271DF10057E65D /* HomemadeApple.ttf in Resources */,
-				636B347D222CF8B200E19302 /* NotoSansKR-Black.otf in Resources */,
 				63EFD26B2234F7AF001430E3 /* Shape 56.png in Resources */,
-				636B347F222CF8B200E19302 /* NotoSansKR-Regular.otf in Resources */,
 				63C3D38D2222FEA200248A7C /* Group 1.png in Resources */,
+				0C1A877E225FCB7100A26D45 /* Basis_Grotesque_ProMedium.ttf in Resources */,
 				63F2A799220FDFDD00645688 /* LaunchScreen.storyboard in Resources */,
+				0C40DF4B225E5E68006E3B2D /* Basis_Grotesque_ProRegular.ttf in Resources */,
 				63EFD26D22351F97001430E3 /* Untitled.png in Resources */,
 				63F2A796220FDFDD00645688 /* Assets.xcassets in Resources */,
 				63B23D6922271DF10057E65D /* EBGaramond.ttf in Resources */,
-				636B3479222CF8B200E19302 /* NotoSansKR-Light.otf in Resources */,
+				0C1A877C225FCB6700A26D45 /* Basis_Grotesque_ProLight.ttf in Resources */,
+				0C9D85FE225E686D00B894B2 /* Localizable.strings in Resources */,
+				0C40DF4A225E5E68006E3B2D /* Basis_Grotesque_ProBold.ttf in Resources */,
 				632DF50D221890AB00F5267E /* Group 60 copy 6.png in Resources */,
 				63AF8D7122400E8F0024921F /* GoogleService-Info.plist in Resources */,
 				63B23D6622271DF10057E65D /* Satisfy.ttf in Resources */,
 				63B23D6722271DF10057E65D /* DancingScript.ttf in Resources */,
-				636B347E222CF8B200E19302 /* NotoSansKR-Medium.otf in Resources */,
-				636B347A222CF8B200E19302 /* NotoSansKR-Bold.otf in Resources */,
 				63F2A794220FDFD800645688 /* Main.storyboard in Resources */,
-				636B347B222CF8B200E19302 /* NotoSansKR-Thin.otf in Resources */,
 				63AF8D732240265F0024921F /* country.json in Resources */,
+				0C67AB0D229503F500625FA3 /* c.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -715,6 +713,7 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
+				"${BUILT_PRODUCTS_DIR}/Localize-Swift/Localize_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MarqueeLabel/MarqueeLabel.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -740,6 +739,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Localize_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarqueeLabel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
@@ -927,6 +927,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0C9D8600225E686D00B894B2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0C9D85FF225E686D00B894B2 /* en */,
+				0C9D8601225E686F00B894B2 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		63F2A792220FDFD800645688 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -950,6 +959,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1011,6 +1021,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

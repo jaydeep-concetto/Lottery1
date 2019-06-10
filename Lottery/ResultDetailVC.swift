@@ -8,7 +8,6 @@
 
 import UIKit
 class ResultDetailCell: UITableViewCell {
-    @IBOutlet var conStackViewWidth: NSLayoutConstraint!
 
     @IBOutlet weak var stackView: UIStackView!
 }
@@ -22,22 +21,18 @@ class ResultDetailVC: BaseViewController,UITableViewDataSource, UITableViewDeleg
     @IBOutlet var tblView2: UITableView!
     @IBOutlet var lblClubno1: UILabel!
     @IBOutlet var svWinnigNo1: UIStackView!
-    @IBOutlet var conSvWinnigNo1Width: NSLayoutConstraint!
 
     @IBOutlet var imgLottery1: UIImageView!
     @IBOutlet var lblMyPrize1: UILabel!
     @IBOutlet var svMyNo1: UIStackView!
-    @IBOutlet var conSvMyNo1Width: NSLayoutConstraint!
 
     @IBOutlet var lblClubPrize1: UILabel!
     @IBOutlet var lblLotteryDate1: UIButton!
     @IBOutlet var lblClubno2: UILabel!
     @IBOutlet var svWinnigNo2: UIStackView!
-    @IBOutlet var conSvWinnigNo2Width: NSLayoutConstraint!
     @IBOutlet var imgLottery2: UIImageView!
     @IBOutlet var lblMyPrize2: UILabel!
     @IBOutlet var svMyNo2: UIStackView!
-    @IBOutlet var conSvMyNo2Width: NSLayoutConstraint!
 
     @IBOutlet var lblClubPrize2: UILabel!
     @IBOutlet var lblLotteryDate2: UILabel!
@@ -59,7 +54,7 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
     }
     func getResult() {
         
-        postapi(url: URL_NAME.lottery_result, maindict:["user_id":users.id,"type":"LR"]) { (dict) in
+        postapi(url: URL_NAME.lottery_result, maindict:["user_id":users.id,"type":"PW"]) { (dict) in
             if dict.count != 0
             {
                 self.arrMain = (dict["data"] as? [String:Any] ?? [:])["lottery_type_list"] as? [[String:Any]] ?? []
@@ -116,27 +111,8 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
             
             lblClubPrize1.text = formatPoints(s: arrCurrentDate[indexArrCurrentDate]["clubwinamount"] as? String ?? "")
             lblMyPrize1.text = formatPoints(s:arrCurrentDate[indexArrCurrentDate]["userwinamount"] as? String ?? "")
-            var tempArr = (arrCurrentDate[indexArrCurrentDate]["winner_number"] as? String ?? "").components(separatedBy: " ")
-            for i in 0..<tempArr.count
-            {
-                if i>5
-                {
-                    tempArr.remove(at: i)
-                }
-            }
-            for i in 0..<svWinnigNo1.subviews.count
-            {
-                svWinnigNo1.subviews[i].isHidden = false
-            }
-            conSvWinnigNo1Width.constant = CGFloat(35 * tempArr.count)-5
-            for i in 0..<svWinnigNo1.subviews.count-tempArr.count
-            {
-                svWinnigNo1.subviews[i].isHidden = true
-            }
-            for i in 0..<tempArr.count
-            {
-                (svWinnigNo1.subviews[i+svWinnigNo1.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-            }
+            SVSetValues(SV: svWinnigNo1, number: arrCurrentDate[indexArrCurrentDate]["winner_number"] as? String ?? "", removeSpace: 130)
+            
             let ta = arrCurrentDate[indexArrCurrentDate]["user_list"] as? [[String:Any]] ?? []
             svMyNo1.superview?.viewWithTag(10001)?.isHidden = false
             arrCurrentLotteryNo = [[String:Any]]()
@@ -144,27 +120,7 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
             {
                 if (j["id"] as? String ?? "") == users.id
                 {
-                    tempArr = (j["lottery_number"] as? String ?? "").components(separatedBy: " ")
-                    for i in 0..<tempArr.count
-                    {
-                        if i>5
-                        {
-                            tempArr.remove(at: i)
-                        }
-                    }
-                    for i in 0..<svMyNo1.subviews.count
-                    {
-                        svMyNo1.subviews[i].isHidden = false
-                    }
-                    conSvMyNo1Width.constant = CGFloat(35 * tempArr.count)-5
-                    for i in 0..<svMyNo1.subviews.count-tempArr.count
-                    {
-                        svMyNo1.subviews[i].isHidden = true
-                    }
-                    for i in 0..<tempArr.count
-                    {
-                        (svMyNo1.subviews[i+svMyNo1.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-                    }
+                    SVSetValues(SV: svMyNo1, number: j["lottery_number"] as? String ?? "", removeSpace: 130)
                 svMyNo1.superview?.viewWithTag(10001)?.isHidden = true
                 }
                 else
@@ -182,27 +138,8 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
             lblLotteryDate2.text = convertDateyyyyMMdd(str:arrPastDate[indexArrPastDate]["lottery_result_date"] as? String ?? "")
             lblClubPrize2.text = formatPoints(s:arrPastDate[indexArrPastDate]["clubwinamount"] as? String ?? "")
             lblMyPrize2.text = formatPoints(s:arrPastDate[indexArrPastDate]["userwinamount"] as? String ?? "")
-            var tempArr = (arrPastDate[indexArrPastDate]["winner_number"] as? String ?? "").components(separatedBy: " ")
-            for i in 0..<tempArr.count
-            {
-                if i>5
-                {
-                    tempArr.remove(at: i)
-                }
-            }
-            for i in 0..<svWinnigNo2.subviews.count
-            {
-                svWinnigNo2.subviews[i].isHidden = false
-            }
-            conSvWinnigNo2Width.constant = CGFloat(35 * tempArr.count)-5
-            for i in 0..<svWinnigNo2.subviews.count-tempArr.count
-            {
-                svWinnigNo2.subviews[i].isHidden = true
-            }
-            for i in 0..<tempArr.count
-            {
-                (svWinnigNo2.subviews[i+svWinnigNo2.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-            }
+            SVSetValues(SV: svWinnigNo2, number: arrPastDate[indexArrPastDate]["winner_number"] as? String ?? "", removeSpace: 130)
+            
             let ta = arrPastDate[indexArrPastDate]["user_list"] as? [[String:Any]] ?? []
            svMyNo2.superview?.viewWithTag(10001)?.isHidden = false
             arrPastLotteryNo = [[String:Any]]()
@@ -211,29 +148,8 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
             {
                 if (j["id"] as? String ?? "") == users.id
                 {
-                
-                    tempArr = (j["lottery_number"] as? String ?? "").components(separatedBy: " ")
-                    for i in 0..<tempArr.count
-                    {
-                        if i>5
-                        {
-                            tempArr.remove(at: i)
-                        }
-                    }
-                    for i in 0..<svMyNo2.subviews.count
-                    {
-                        svMyNo2.subviews[i].isHidden = false
-                    }
-                    conSvMyNo2Width.constant = CGFloat(35 * tempArr.count)-5
-                    for i in 0..<svMyNo2.subviews.count-tempArr.count
-                    {
-                        svMyNo2.subviews[i].isHidden = true
-                    }
-                    for i in 0..<tempArr.count
-                    {
-                        (svMyNo2.subviews[i+svMyNo2.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-                    }
-                    svMyNo2.superview?.viewWithTag(10001)?.isHidden = true
+                SVSetValues(SV: svMyNo2, number: j["lottery_number"] as? String ?? "", removeSpace: 130)
+                svMyNo2.superview?.viewWithTag(10001)?.isHidden = true
                 }
                 else
                 {
@@ -244,14 +160,14 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
         }
         
     }
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden=false
-        let l1 = noDataView1(str: Constant_String.No_Result_To_Display,fr: (tblView1.superview?.frame)!)
-        l1.tag = 10000
-        tblView1.superview?.addSubview(l1)
-        let l2 = noDataView1(str: Constant_String.No_Result_To_Display,fr: (tblView2.superview?.frame)!)
-        l2.tag = 10000
-        tblView2.superview?.addSubview(l2)
+//        let l1 = noDataView1(str: Constant_String.No_Result_To_Display,fr: (tblView1.superview?.frame)!)
+//        l1.tag = 10000
+//        tblView1.superview?.addSubview(l1)
+//        let l2 = noDataView1(str: Constant_String.No_Result_To_Display,fr: (tblView2.superview?.frame)!)
+//        l2.tag = 10000
+//        tblView2.superview?.addSubview(l2)
         let l3 = noDataView1(str: Constant_String.None,fr: (svMyNo1.superview?.frame)!)
         l3.tag = 10001
         svMyNo1.superview?.addSubview(l3)
@@ -352,7 +268,7 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
     {
         if tableView == tblView1
         {
-            tableView.backgroundView  = (arrCurrentLotteryNo.count == 0) ? noDataView(str: Constant_String.None,tableView: tableView) : nil
+            tableView.backgroundView  = (arrCurrentLotteryNo.count == 0) ? noDataView2(str: Constant_String.None,fr: tableView.bounds) : nil
             return (arrCurrentLotteryNo.count == 0) ? 0 : 1
         }
         else
@@ -372,29 +288,8 @@ var arrPastLotteryNo:[[String:Any]] = [[String:Any]]()
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultDetailCell", for: indexPath) as! ResultDetailCell
-        let j = (tableView == tblView1) ? arrCurrentLotteryNo[indexPath.row] : arrPastLotteryNo[indexPath.row]
-        var tempArr = (j["lottery_number"] as? String ?? "").components(separatedBy: " ")
-        for i in 0..<tempArr.count
-        {
-            if i>5
-            {
-                tempArr.remove(at: i)
-            }
-        }
-        for i in 0..<cell.stackView.subviews.count
-        {
-            cell.stackView.subviews[i].isHidden = false
-        }
-        cell.conStackViewWidth.constant = CGFloat(35 * tempArr.count)-5
-        for i in 0..<cell.stackView.subviews.count-tempArr.count
-        {
-            cell.stackView.subviews[i].isHidden = true
-        }
-        for i in 0..<tempArr.count
-        {
-            (cell.stackView.subviews[i+cell.stackView.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
-        }
-        SVSetValue(SV: cell.stackView)
+        var j = (tableView == tblView1) ? arrCurrentLotteryNo[indexPath.row] : arrPastLotteryNo[indexPath.row]
+        SVSetValues(SV: cell.stackView, number: j["lottery_number"] as? String ?? "", removeSpace: 130)
         return cell
     }
     

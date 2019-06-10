@@ -8,23 +8,33 @@
 
 import UIKit
 import Firebase
+import AVFoundation
+
 class LotteryPreviewOneCell:UITableViewCell {
     
     @IBOutlet weak var lblLtteryName: UILabel!
     @IBOutlet weak var imgLottery: UIImageView!
 }
-class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate,LotteryInstructionVCDelegate {
+class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate,UIImagePickerControllerDelegate,LotteryInstructionVCDelegate,AVCapturePhotoCaptureDelegate {
+    @IBOutlet weak var previewView : UIView!
+    var session: AVCaptureSession?
+    var stillImageOutput: AVCapturePhotoOutput?
+    var videoPreviewLayer: AVCaptureVideoPreviewLayer?
+    
     var selectLotteryType:Int = -1
     var selectLotteryType1:Int = -1
     var timer = Timer()
-
+    
     var imgLottery: LyEditImageView!
     @IBOutlet weak var imgLotterySuperView:UIView!
     @IBOutlet weak var viewLotteryType:UIView!
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var btnScan: UIButton!
+    @IBOutlet weak var btnCancel: UIButton!
+    var arrMainDict:[[String:Any]] = [[String:Any]]()
+
     var mainDict:[String:Any] = [String:Any]()
-    let arrTitle:[[String:String]] = [["title":"Fit the entire front ticket on the screen","btn":"Next"],["title":"Move the Box and Fix your numbers and draw date","btn":"Scan"],["title":"Fit the entire back ticket on the screen","btn":"Next"],["title":"Move the Box and Fix that sign","btn":"Scan"]]
+    let arrTitle:[[String:String]] = [["title":"Fit the entire front ticket on the screen","btn":""],["title":"Move the Box and Fix your numbers and draw date","btn":"Scan"],["title":"Fit the entire back ticket on the screen","btn":""],["title":"Move the Box and Fix that sign","btn":"Scan"]]
     var arrImg:[UIImage] = [UIImage]()
     var lblSign:String = ""
     
@@ -34,52 +44,154 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
     @IBOutlet weak var conTblHeight: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
-        lblTitle.text = arrTitle[arrTitleIndex]["title"]
-        btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
+        if UIImagePickerController.isSourceTypeAvailable(.camera){
+            setCamera()
+        }
+        
+       
+        
     }
-  
+    func initialView()
+    {
+        selectLotteryType = -1
+        selectLotteryType1 = -1
+       
+        
+        mainDict = [String:Any]()
+        
+        arrImg = [UIImage]()
+        lblSign = ""
+        
+        arrTitleIndex = 0
+        viewLotteryType.isHidden = false
+        self.view.viewWithTag(999)?.isHidden = true
+        self.view.viewWithTag(1001)?.isHidden = true
+        self.view.viewWithTag(1002)?.isHidden = true
+        self.view.viewWithTag(1003)?.isHidden = true
+        self.view.backgroundColor = UIColor.clear
+        previewView.isHidden = true
+    }
     override func viewWillAppear(_ animated: Bool) {
         if selectLotteryType == -1{
             self.view.backgroundColor = UIColor.clear
-
-        UIView.animate(withDuration: 0.4, delay: 0.2, options: .curveLinear, animations: {
-            self.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        }, completion: nil)
+            
+            UIView.animate(withDuration: 0.4, delay: 0.2, options: .curveLinear, animations: {
+                self.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+            }, completion: nil)
         }
         self.tabBarController?.tabBar.isHidden=true
-        if users.signature != "" && arrTitleIndex == 1
-        {
-            
-            arrTitleIndex += 1
-            lblTitle.text = arrTitle[arrTitleIndex]["title"]
-            btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
-            let vc = UIImagePickerController()
-            vc.sourceType = .camera
-            vc.allowsEditing = false
-            vc.delegate = self
-            present(vc, animated: true)
-        }
-      
+        
+        
     }
-    
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-      
-        picker.dismiss(animated: true)
-        //  self.dismiss(animated: false, completion: nil)
-    }
-    func setData(arrTitleIndexs:Int) {
+    func fromFirstSign()
+    {
         let a = self.view.viewWithTag(1004)
         a!.isHidden = true
         let a1 = self.view.viewWithTag(1005)
         a1!.isHidden = true
-        self.arrTitleIndex = arrTitleIndexs
-        if arrTitleIndex == 2
+        if users.signature != ""
         {
-            arrTitleIndex += 1
-            lblTitle.text = arrTitle[arrTitleIndex]["title"]
-            btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
+            
+            arrTitleIndex = 2
+            setBtn()
+            if UIImagePickerController.isSourceTypeAvailable(.camera){
+                previewView.isHidden = false
+                videoPreviewLayer!.frame = previewView.bounds
+                session!.startRunning()
+            }
+            else{
+                let vc = UIImagePickerController()
+                vc.sourceType = .photoLibrary
+                vc.allowsEditing = false
+                vc.delegate = self
+                present(vc, animated: true)
+            }
         }
+    }
+    func fromSecondSign()
+    {
+        let a = self.view.viewWithTag(1004)
+        a!.isHidden = true
+        let a1 = self.view.viewWithTag(1005)
+        a1!.isHidden = true
+        
+        arrTitleIndex = 3
+        setBtn()
+        
+        
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
+        picker.dismiss(animated: true)
+        NotificationCenter.default.post(name: Notification.Name("peru2"), object: nil)
+        self.view.backgroundColor = UIColor.clear
+        
+        self.dismiss(animated: false, completion: nil)
+        //  self.dismiss(animated: false, completion: nil)
+    }
+    func setData() {
+        let a = self.view.viewWithTag(1004)
+        a!.isHidden = true
+        let a1 = self.view.viewWithTag(1005)
+        a1!.isHidden = true
+        arrTitleIndex = 2
+        setBtn()
+        if UIImagePickerController.isSourceTypeAvailable(.camera){
+            previewView.isHidden = false
+            videoPreviewLayer!.frame = previewView.bounds
+            session!.startRunning()
+        }
+        else{
+            let vc = UIImagePickerController()
+            vc.sourceType = .photoLibrary
+            vc.allowsEditing = false
+            vc.delegate = self
+            present(vc, animated: true)
+        }
+    }
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        
+        guard let imageData = photo.fileDataRepresentation()
+            else { return }
+        let image = UIImage(data: imageData)
+        selectLotteryType = selectLotteryType1
+        
+        imgLottery = LyEditImageView(frame:CGRect(x: 0, y: 0, width: imgLotterySuperView.frame.size.width, height: imgLotterySuperView.frame.size.height))
+        imgLottery.initWithImage(image: image!)
+        
+        for i in self.imgLotterySuperView.subviews
+        {
+            i.removeFromSuperview()
+        }
+        self.imgLotterySuperView.addSubview(imgLottery)
+        switch arrTitleIndex {
+        case 0:
+            if arrImg.count > 0
+            {
+                arrImg[0] = image!
+            }
+            else
+            {
+                arrImg.append(image!)
+            }
+        case 2:
+            if arrImg.count > 2
+            {
+                arrImg[2] = image!
+            }
+            else
+            {
+                arrImg.append(image!)
+            }
+        default:
+            print("")
+        }
+        self.session?.stopRunning()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
+            self.previewView.isHidden = true
+        }
+        arrTitleIndex += 1
+        setBtn()
     }
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
@@ -88,22 +200,41 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
             print("No image found")
             return
         }
-        self.view.backgroundColor = UIColor.white
-       selectLotteryType = selectLotteryType1
-        viewLotteryType.isHidden = true
-        self.view.viewWithTag(1001)?.isHidden = false
-        self.view.viewWithTag(1002)?.isHidden = false
-        self.view.viewWithTag(1003)?.isHidden = false
-        self.view.backgroundColor = UIColor.white
+        selectLotteryType = selectLotteryType1
+        
         imgLottery = LyEditImageView(frame:CGRect(x: 0, y: 0, width: imgLotterySuperView.frame.size.width, height: imgLotterySuperView.frame.size.height))
         imgLottery.initWithImage(image: image)
+        
         for i in self.imgLotterySuperView.subviews
         {
             i.removeFromSuperview()
         }
         self.imgLotterySuperView.addSubview(imgLottery)
+        switch arrTitleIndex {
+        case 0:
+            if arrImg.count > 0
+            {
+                arrImg[0] = image
+            }
+            else
+            {
+                arrImg.append(image)
+            }
+        case 2:
+            if arrImg.count > 2
+            {
+                arrImg[2] = image
+            }
+            else
+            {
+                arrImg.append(image)
+            }
+        default:
+            print("")
+        }
+        arrTitleIndex += 1
+        setBtn()
     }
-    
     func back()
     {
         NotificationCenter.default.post(name: Notification.Name("peru2"), object: nil)
@@ -114,51 +245,79 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
     @IBAction func btnBackClicked(_ sender: UIButton) {
         NotificationCenter.default.post(name: Notification.Name("peru2"), object: nil)
         self.view.backgroundColor = UIColor.clear
-
+        
         self.dismiss(animated: (selectLotteryType == -1), completion: nil)
-            
+        
     }
-    @IBAction func btnScanClicked(_ sender: UIButton) {
+    @IBAction func btnCancelClicked(_ sender: UIButton) {
+        if sender.titleLabel!.text! == "Cancel"
+        {
+            NotificationCenter.default.post(name: Notification.Name("peru2"), object: nil)
+            self.view.backgroundColor = UIColor.clear
+            
+            self.dismiss(animated:false, completion: nil)
+        }
+        else
+        {
+            arrTitleIndex -= 1
+            setBtn()
+            if UIImagePickerController.isSourceTypeAvailable(.camera){
+                previewView.isHidden = false
+                videoPreviewLayer!.frame = previewView.bounds
+                session!.startRunning()
+            }
+            else{
+                let vc = UIImagePickerController()
+                vc.sourceType = .photoLibrary
+                vc.allowsEditing = false
+                vc.delegate = self
+                present(vc, animated: true)
+            }
+        }
+    }
+    @objc func timerAction1() {
         switch arrTitleIndex {
-        case 0:
-            if arrImg.count > 0
-            {
-                arrImg[0] = imgLottery.getCroppedImage()
-            }
-            else
-            {
-                arrImg.append(imgLottery.getCroppedImage())
-            }
-            imgLottery.initWithImage(image:arrImg[0])
-            self.imgLotterySuperView.addSubview(imgLottery)
-            
-            arrTitleIndex += 1
-            lblTitle.text = arrTitle[arrTitleIndex]["title"]
-            btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
         case 1:
-            recognizeText(img: imgLottery.getCroppedImage(), WhatRecognize: "number")
-            
-        case 2:
-            if arrImg.count > 2
-            {
-                arrImg[2] = imgLottery.getCroppedImage()
-            }
-            else
-            {
-                arrImg.append(imgLottery.getCroppedImage())
-            }
-            imgLottery.initWithImage(image:arrImg[2])
-            self.imgLotterySuperView.addSubview(imgLottery)
-            
-            arrTitleIndex += 1
-            lblTitle.text = arrTitle[arrTitleIndex]["title"]
-            btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
+        recognizeText(img: imgLottery.getCroppedImage(), WhatRecognize: "number")
         default:
             let url = URL(string:users.signature)
             if let data = try? Data(contentsOf: url!)
             {
                 recognizeText(img: UIImage(data: data)!, WhatRecognize: "selfsign")
             }
+        }
+    }
+    @IBAction func btnScanClicked(_ sender: UIButton) {
+        switch arrTitleIndex {
+        case 0:
+            let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            stillImageOutput!.capturePhoto(with: settings, delegate: self)
+            session!.stopRunning()
+            
+        case 1:
+//            let t = imgLottery.getCroppedImage()
+//            imgLottery = LyEditImageView(frame:CGRect(x: 0, y: 0, width: imgLotterySuperView.frame.size.width, height: imgLotterySuperView.frame.size.height))
+//            imgLottery.initWithImage(image: t)
+//
+//            for i in self.imgLotterySuperView.subviews
+//            {
+//                i.removeFromSuperview()
+//            }
+//            self.imgLotterySuperView.addSubview(imgLottery)
+            imgLottery.startav()
+            lblTitle.text = "It will take 2-3 seconds"
+            timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(timerAction1), userInfo: nil, repeats: false)
+            
+            
+        case 2:
+            let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+            stillImageOutput!.capturePhoto(with: settings, delegate: self)
+            session!.stopRunning()
+        default:
+            imgLottery.startav()
+            lblTitle.text = "It will take 2-3 seconds"
+            timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(timerAction1), userInfo: nil, repeats: false)
+           
             
         }
         
@@ -186,13 +345,28 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewLotteryType.isHidden = true
+        self.view.viewWithTag(999)?.isHidden = false
+        self.view.viewWithTag(1001)?.isHidden = false
+        self.view.viewWithTag(1002)?.isHidden = false
+        self.view.viewWithTag(1003)?.isHidden = false
+        self.view.backgroundColor = UIColor.white
+        arrTitleIndex = 0
+        setBtn()
         selectLotteryType1 = indexPath.row
         mainDict = arrLotteryType[selectLotteryType1]
-        let vc = UIImagePickerController()
-        vc.sourceType = .camera
-        vc.allowsEditing = false
-        vc.delegate = self
-        present(vc, animated: true)
+        if UIImagePickerController.isSourceTypeAvailable(.camera){
+            previewView.isHidden = false
+            videoPreviewLayer!.frame = previewView.bounds
+            session!.startRunning()
+        }
+        else{
+            let vc = UIImagePickerController()
+            vc.sourceType = .photoLibrary
+            vc.allowsEditing = false
+            vc.delegate = self
+            present(vc, animated: true)
+        }
     }
     func recognizeText(img:UIImage,WhatRecognize:String)
     {
@@ -202,6 +376,8 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
         var b:[[String:Any]] = [[String:Any]]()
         textRecognizer.process(image) { result, error in
             guard error == nil, let result = result else {
+                self.imgLottery.stopav()
+                self.setBtn()
                 if WhatRecognize == "number"
                 {
                     self.view.makeToast("Scanning was not properly made. Please scan the  lottery number and result date again.", duration: 2, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
@@ -289,6 +465,7 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
                 arrFinal.append(tempStr)
             }
             print(arrFinal)
+            self.setBtn()
             if WhatRecognize == "number"
             {
                 self.checkForNumberAndDate(arrFinal: arrFinal)
@@ -296,13 +473,14 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
             else if WhatRecognize == "selfsign"
             {
                 self.lblSign = arrFinal.joined(separator: "")
-               
+                
                 self.recognizeText(img: self.imgLottery.getCroppedImage(), WhatRecognize: "matchsign")
             }
             else
             {
                 self.checkForSign(arrFinal: arrFinal.joined(separator: ""))
             }
+            self.imgLottery.stopav()
             // Recognized text
         }
         
@@ -316,20 +494,15 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
     @IBAction func btnSignatureClicked(_ sender: UIButton) {
         let SecondVC = self.storyboard?.instantiateViewController(withIdentifier: "Signature1VC") as! Signature1VC
         SecondVC.delegate = self
-       SecondVC.strTitle = "Re-create your signature."
+        SecondVC.strTitle = "Re-create your signature."
         self.navigationController?.pushViewController(SecondVC, animated: true)
     }
     @objc func timerAction() {
-        let l1 = self.view.viewWithTag(1004)?.subviews[0] as! UILabel
-        let i1 = Int("\(l1.text!.prefix(1))")!-1
-        l1.text = "\(i1)sec..."
-        if i1 == 0
-        {
+        
             timer.invalidate()
             let SecondVC = self.storyboard?.instantiateViewController(withIdentifier: "LotteryInstructionVC") as! LotteryInstructionVC
             SecondVC.delegate = self
-        self.navigationController?.pushViewController(SecondVC, animated: true)
-        }
+            self.navigationController?.pushViewController(SecondVC, animated: true)
     }
     func checkForSign(arrFinal:String)
     {
@@ -350,13 +523,11 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
         if lblLotto != ""
         {
             lblTitle.text = "Does not match"
-
-            let a = self.view.viewWithTag(1004)
-            a!.isHidden = false
+            self.view.makeToast("Does not match the text of “LSSL lotto club” Please use another lottery ticket", duration: 3, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
+            
             timer.invalidate()
-            let l1 = a?.subviews[0] as! UILabel
-            l1.text = "7sec..."
-            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerAction), userInfo: nil, repeats: true)
+           
+            timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(timerAction), userInfo: nil, repeats: false)
         }
         else if lblSign != ""
         {
@@ -377,30 +548,32 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
                 arrImg.append(imgLottery.getCroppedImage())
             }
             mainDict["lotteryImg"] = arrImg
-            
+            arrMainDict.append(mainDict)
             let SecondVC = self.storyboard?.instantiateViewController(withIdentifier: "LotteryPreview2VC") as! LotteryPreview2VC
-            SecondVC.mainDict = mainDict
-           SecondVC.delegate = self
+            SecondVC.arrMainDict = arrMainDict
+            SecondVC.delegate = self
             self.navigationController?.pushViewController(SecondVC, animated: true)
-
+            
         }
-//        else
-//        {
-//            self.view.makeToast("Scanning was not properly made. Please scan the signature again.", duration: 2, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
-//        }
+        //        else
+        //        {
+        //            self.view.makeToast("Scanning was not properly made. Please scan the signature again.", duration: 2, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
+        //        }
     }
     func checkForNumberAndDate(arrFinal:[String])
     {
         var date:String = ""
         var numberArr:[String] = []
-        for i in arrFinal {
+        for var i in arrFinal {
             var isDate:Bool = false
-            if i.length > 9 && !isDate
+            i = i.replacingOccurrences(of: ",", with: "")
+            i = i.replacingOccurrences(of: ".", with: "")
+            if i.length > 6 && !isDate
             {
-                for j in 0..<i.length-10 {
+                for j in 0..<i.length-6 {
                     let dateFormatterGet = DateFormatter()
-                    dateFormatterGet.dateFormat = "EMMMddYY"
-                    let ss = i.subString(startIndex: j, endIndex: j+9)
+                    dateFormatterGet.dateFormat = "MMMddyy"
+                    let ss = i.subString(startIndex: j, endIndex: j+6)
                     if let _ = dateFormatterGet.date(from: ss) {
                         for (index, character) in ss.enumerated() {
                             date.append(String(character))
@@ -414,17 +587,51 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
                     }
                 }
             }
+            if i.length > 9 && !isDate
+            {
+                for j in 0..<i.length-9 {
+                    let dateFormatterGet = DateFormatter()
+                    dateFormatterGet.dateFormat = "MM/dd/yyyy"
+                    let ss = i.subString(startIndex: j, endIndex: j+9)
+                    if let _ = dateFormatterGet.date(from: ss) {
+                        for (_, character) in ss.enumerated() {
+                            date.append(String(character))
+                            
+                        
+                        }
+                        
+                        isDate = true
+                    }
+                }
+            }
+            if i.length > 9 && !isDate
+            {
+                for j in 0..<i.length-9 {
+                    let dateFormatterGet = DateFormatter()
+                    dateFormatterGet.dateFormat = "yyyy/MM/dd"
+                    let ss = i.subString(startIndex: j, endIndex: j+9)
+                    if let _ = dateFormatterGet.date(from: ss) {
+                        for (_, character) in ss.enumerated() {
+                            date.append(String(character))
+                            
+                            
+                        }
+                        
+                        isDate = true
+                    }
+                }
+            }
             let tempStr = i.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
             if tempStr.length == 12 && !isDate
             {
                 numberArr.append(tempStr.separate(every:2, with: " "))
             }
         }
-        if date == "" || numberArr.count == 0
+        if  numberArr.count == 0
         {
-            self.view.makeToast("Scanning was not properly made. Please scan the  lottery number and result date again.", duration: 2, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
+            self.view.makeToast("Scanning was not properly made. Please scan the  lottery number and result date again.", duration: 3, position:CGPoint(x:self.view.frame.size.width/2,y:self.view.frame.size.height-80))
         }
-       
+            
         else
         {
             mainDict["date"] = date
@@ -437,7 +644,7 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
             {
                 arrImg.append(imgLottery.getCroppedImage())
             }
-             if users.signature == ""
+            if users.signature == ""
             {
                 let SecondVC = self.storyboard?.instantiateViewController(withIdentifier: "Signature1VC") as! Signature1VC
                 SecondVC.delegate = self
@@ -446,16 +653,55 @@ class LotteryPreview1VC: BaseViewController,UITableViewDelegate, UITableViewData
                 self.navigationController?.pushViewController(SecondVC, animated: true)
             }
             else
-             {
-            arrTitleIndex += 1
-            lblTitle.text = arrTitle[arrTitleIndex]["title"]
-            btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
-            let vc = UIImagePickerController()
-            vc.sourceType = .camera
-            vc.allowsEditing = false
-            vc.delegate = self
-            present(vc, animated: true)
+            {
+                arrTitleIndex += 1
+                setBtn()
+                if UIImagePickerController.isSourceTypeAvailable(.camera){
+                    previewView.isHidden = false
+                    videoPreviewLayer!.frame = previewView.bounds
+                    session!.startRunning()
+                }
+                else{
+                    let vc = UIImagePickerController()
+                    vc.sourceType = .photoLibrary
+                    vc.allowsEditing = false
+                    vc.delegate = self
+                    present(vc, animated: true)
+                }
             }
         }
+    }
+    func setCamera() {
+        session = AVCaptureSession()
+        session!.sessionPreset = AVCaptureSession.Preset.photo
+        let backCamera =  AVCaptureDevice.default(for: AVMediaType.video)
+        var error: NSError?
+        var input: AVCaptureDeviceInput!
+        do {
+            input = try AVCaptureDeviceInput(device: backCamera!)
+        } catch let error1 as NSError {
+            error = error1
+            input = nil
+            print(error!.localizedDescription)
+        }
+        if error == nil && session!.canAddInput(input) {
+            session!.addInput(input)
+            stillImageOutput = AVCapturePhotoOutput()
+            //  stillImageOutput?.outputSettings = [AVVideoCodecKey:  AVVideoCodecJPEG]
+            if session!.canAddOutput(stillImageOutput!) {
+                session!.addOutput(stillImageOutput!)
+                videoPreviewLayer = AVCaptureVideoPreviewLayer(session: session!)
+                videoPreviewLayer!.videoGravity =    AVLayerVideoGravity.resizeAspectFill
+                videoPreviewLayer!.connection?.videoOrientation =   AVCaptureVideoOrientation.portrait
+                previewView.layer.addSublayer(videoPreviewLayer!)
+                
+            }
+        }
+    }
+    func setBtn() {
+        lblTitle.text = arrTitle[arrTitleIndex]["title"]
+        btnScan.setTitle(arrTitle[arrTitleIndex]["btn"], for: .normal)
+        btnScan.setImage(arrTitle[arrTitleIndex]["btn"] == "" ? UIImage(named: "img_camera") : nil, for: .normal)
+        btnCancel.setTitle(arrTitle[arrTitleIndex]["btn"] == "" ? "Cancel" : "Re-Shot", for: .normal)
     }
 }

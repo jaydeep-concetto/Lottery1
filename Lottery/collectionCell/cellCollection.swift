@@ -9,15 +9,7 @@
 import Foundation
 import UIKit
 
-class cellHomeUpperCollection: UICollectionViewCell {
-    @IBOutlet weak var lblPrice: UILabel!
-    @IBOutlet weak var lblDate: UILabel!
-    @IBOutlet weak var imgTag: UIImageView!
-}
 
-class cellHomeStaticOptionList: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
-}
 class LotteryPreviewTopTwoCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
 }

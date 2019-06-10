@@ -34,7 +34,10 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     var pinchGestureRecognizer: UIPinchGestureRecognizer!
     var panGestureRecognizer: UIPanGestureRecognizer!
     var cropViewPanGesture: UIPanGestureRecognizer!
-    
+    var imgAnimated: UIImageView!
+    var imgAnimated1: UIImageView!
+    var lblAnimated:UILabel!
+    var viewShadow:UIView!
     var imageView: UIImageView!
     var touchStartPoint: CGPoint!
     var originImageViewFrame: CGRect!
@@ -44,7 +47,7 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     
     var cropUpContraint: NSLayoutConstraint!
     var originalImageViewFrame: CGRect!
-    
+    var timer = Timer()
     var cropLeftMargin: CGFloat!
     var cropTopMargin: CGFloat!
     var cropRightMargin: CGFloat!
@@ -57,6 +60,58 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     var originalSubViewFrame:CGRect!
     var cropViewConstraintsRatio: CGFloat!
     // MARK: init
+    func startav() {
+        self.isUserInteractionEnabled = false
+        imageView.isUserInteractionEnabled = false
+        cropView.isUserInteractionEnabled = false
+        cropView.clipsToBounds = true
+        viewShadow.isHidden = false
+        self.superview?.superview?.viewWithTag(50000)?.isHidden = false
+        var f = cropView.frame
+        var b = cropView.center
+        b.y = f.origin.y+f.size.height+20
+        lblAnimated.frame = CGRect(x: 0, y: 0, width: 100, height: 25)
+        lblAnimated.center = b
+        f.origin.x = -f.size.width
+        f.origin.y = 0
+        imgAnimated.frame = f
+        f.origin.x = -f.size.width-f.size.width
+        f.origin.y = 0
+        imgAnimated1.frame = f
+        timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(timerAction), userInfo: nil, repeats: true)
+    }
+    func stopav() {
+        
+        timer.invalidate()
+        self.isUserInteractionEnabled = true
+        imageView.isUserInteractionEnabled = true
+        cropView.isUserInteractionEnabled = true
+        cropView.clipsToBounds = false
+
+        viewShadow.isHidden = true
+        self.superview?.superview?.viewWithTag(50000)?.isHidden = true
+        imgAnimated1.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        lblAnimated.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        imgAnimated.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+    }
+    @objc func timerAction() {
+        var f = imgAnimated.frame
+        f.origin.x += 1
+        imgAnimated.frame = f
+        if f.origin.x > f.size.width
+        {
+            f.origin.x -= (2*f.size.width)
+            imgAnimated.frame = f
+        }
+        f = imgAnimated1.frame
+        f.origin.x += 1
+        imgAnimated1.frame = f
+        if f.origin.x > f.size.width
+        {
+            f.origin.x -= (2*f.size.width)
+            imgAnimated1.frame = f
+        }
+    }
     private func commitInit() {
         // set cropView
         screenWidth = self.frame.size.width
@@ -135,13 +190,34 @@ class LyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
 
     private func initCropView() {
         initOverLayView()
-        
+        var b = self.frame
+        b.size.height = b.size.height - 30
+        viewShadow = UIView.init(frame: b)
+        viewShadow.backgroundColor = UIColor.black
+        viewShadow.alpha = 0.7
+        viewShadow.isHidden = true
+        self.addSubview(viewShadow)
         cropView = CropView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         cropView.tag = CROP_VIEW_TAG;
         cropView.translatesAutoresizingMaskIntoConstraints = false
         cropView.delegate = self
+        imgAnimated = UIImageView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        imgAnimated.image = UIImage(named: "ai.png")
+        imgAnimated.alpha = 0.7
+        cropView.addSubview(imgAnimated)
+        imgAnimated1 = UIImageView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        imgAnimated1.image = UIImage(named: "ai.png")
+        imgAnimated1.alpha = 0.7
+        cropView.addSubview(imgAnimated1)
+      //  253 93 15
+       // cropView.backgroundColor = UIColor.black
         self.addSubview(cropView)
-
+        lblAnimated = UILabel.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        lblAnimated.textAlignment = .center
+        lblAnimated.textColor = UIColor.init(red: 253/255.0, green: 93/255.0, blue: 15/255.0, alpha: 1)
+        lblAnimated.text = "Scanning..."
+        lblAnimated.textColor = UIColor.white
+        self.addSubview(lblAnimated)
         cropRightMargin = (CGFloat)(self.frame.size.width / 2) - (CGFloat)(INIT_CROP_VIEW_SIZE / 2)
         cropLeftMargin = cropRightMargin
         cropTopMargin = (CGFloat)(self.frame.size.height / 2) - (CGFloat)(INIT_CROP_VIEW_SIZE / 2)

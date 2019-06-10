@@ -80,8 +80,8 @@ struct URL_NAME {
     public static let ticket_detail = "ticket_detail"
     public static let lottery_result = "lottery_result"
     public static let announcement = "announcement"
-//    public static let
-//    public static let
+    public static let state_tax = "state_tax"
+    public static let calculator = "calculator"
 //    public static let
 //    public static let
 //    public static let

@@ -13,22 +13,95 @@ import Alamofire
 import MBProgressHUD
 import Kingfisher
 import Toast
+import Localize_Swift
+extension String
+{
+    var lang : String{
+        return self.localized()
+    }
+    
+}
 class BaseViewController: UIViewController,UITextFieldDelegate {
     //MARK: - Variable Declaration
+    func setString(tag:Int,str:String){
+        let v = self.view.viewWithTag(tag)
+        if v is UILabel
+        {
+            (v as! UILabel).text = str.localized()
+        }
+        else if v is UIButton
+        {
+            (v as! UIButton).setTitle(str.localized(), for: .normal)
+        }
+    }
     var viewSpinner: UIView = UIView()
     @IBOutlet var spinnerView: UIActivityIndicatorView!
-    
+    func getLanguage() -> String
+    {
+        return Localize.currentLanguage()
+    }
+    func setLanguage(s:String)
+    {
+        Localize.setCurrentLanguage(s)
+    }
     //MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         
     }
     func SVSetValue(SV:UIStackView) {
         for a in SV.subviews
         {
-            a.layer.cornerRadius = a.frame.size.height/2
             a.layer.masksToBounds = true
+            
+            a.layer.cornerRadius = a.frame.size.width/2
+        }
+    }
+    func SVSetValues(SV:UIStackView,number:String,removeSpace:CGFloat){
+        var tempArr = number.components(separatedBy: " ")
+        
+        if number == ""
+        {
+            SV.isHidden = true
+        }
+        else
+        {
+            SV.isHidden = false
+            for i in 0..<SV.subviews.count
+            {
+                SV.subviews[i].isHidden = false
+            }
+        for i in 0..<tempArr.count
+        {
+            if i>5
+            {
+                tempArr.remove(at: i)
+            }
+        }
+        for i in 0..<SV.subviews.count
+        {
+            SV.subviews[i].isHidden = false
+        }
+        let space = self.view.frame.size.width-removeSpace
+        let cons = SV.constraints.filter {
+            $0.firstAttribute == NSLayoutConstraint.Attribute.width
+            }.first
+        cons?.constant = space < CGFloat(35 * tempArr.count)-5 ? space : CGFloat(35 * tempArr.count)-5
+        for i in 0..<SV.subviews.count-tempArr.count
+        {
+            SV.subviews[i].isHidden = true
+        }
+        for i in 0..<tempArr.count
+        {
+            (SV.subviews[i+SV.subviews.count-tempArr.count].subviews[0] as! UILabel).text = tempArr[i]
+        }
+        for a in SV.subviews
+        {
+            a.layer.masksToBounds = true
+            let cw = cons!.constant-CGFloat((tempArr.count-1)*5)
+            a.layer.cornerRadius = (cw/CGFloat(tempArr.count))/2
+        }
         }
     }
     func setSliderLabel1(slider:UISlider,lblView:UIView,lblSlider:UILabel) {
@@ -37,7 +110,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         let thumbRect: CGRect = lblView.superview!.convert(_thumbRect, from: slider)
         lblView.frame = CGRect(x: thumbRect.origin.x-4, y: thumbRect.origin.y-33, width: lblView.frame.size.width, height: lblView.frame.size.height)
         lblSlider.text = "X\(String(format: "%0.1f", slider.value))"
-
+        
     }
     func setSliderLabel2(slider:UISlider,lblView:UIView,lblSlider:UILabel) {
         let _thumbRect: CGRect = slider.thumbRect(forBounds: slider.bounds, trackRect: slider.trackRect(forBounds: slider.bounds), value: slider.value)
@@ -81,7 +154,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     }
     
     @IBAction func btnMenuAction(_ sender: Any) {
-       //
+        //
         
     }
     
@@ -91,8 +164,8 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         
     }
     func setViewRoundCorner(view:UIView)  {
-      view.layer.cornerRadius=view.frame.size.width/2
-      view.layer.masksToBounds=true
+        view.layer.cornerRadius=view.frame.size.width/2
+        view.layer.masksToBounds=true
     }
     
     func checkIfExpiredSession(dict:Dictionary<String,Any>) {
@@ -168,7 +241,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         }
     }
     
-   
+    
     
     //MARK: - Check Key is Exiest or not in UserDefault.
     func isKeyExiestInStorage(_ key:String) ->Bool{
@@ -212,13 +285,13 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         return emailTest.evaluate(with: testStr)
     }
     
-  /*  func isValidPassword(_ passwordString: String) -> Bool {
-        // let stricterFilterString = "^(?=.*\\p{Alpha})(?=.*\\p{Digit}).{8,}$"
-        let stricterFilterString = "^[A-Z0-9a-z._%+-]{5,}$"
-        let passwordTest = NSPredicate(format: "SELF MATCHES %@", stricterFilterString)
-        let result = passwordTest.evaluate(with: passwordString)
-        return result
-    }*/
+    /*  func isValidPassword(_ passwordString: String) -> Bool {
+     // let stricterFilterString = "^(?=.*\\p{Alpha})(?=.*\\p{Digit}).{8,}$"
+     let stricterFilterString = "^[A-Z0-9a-z._%+-]{5,}$"
+     let passwordTest = NSPredicate(format: "SELF MATCHES %@", stricterFilterString)
+     let result = passwordTest.evaluate(with: passwordString)
+     return result
+     }*/
     
     func isValidPassword(_ passwordString: String) -> Bool {
         let stricterFilterString = "^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$"
@@ -234,7 +307,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         return valid
     }
     
-
+    
     func isValidUserName(_ nameString: String) -> Bool{
         let stricterFilterString = "^[A-Z0-9a-z-._]{1,20}$"
         let nameTest = NSPredicate(format: "SELF MATCHES %@", stricterFilterString)
@@ -265,7 +338,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         let trimmedString = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return trimmedString
     }
-
+    
     
     func getDirectoryPath() -> String {
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -290,21 +363,21 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         return noDataLabel
     }
     func noDataView2(str:String,fr:CGRect) -> UIView {
-        let noDataLabel: UILabel     = UILabel(frame: CGRect(x: 0, y: 222, width: fr.size.width, height: fr.size.height-222))
+        let noDataLabel: UILabel     = UILabel(frame: CGRect(x: 0, y: 194, width: fr.size.width, height: fr.size.height-194))
         noDataLabel.font = UIFont.systemFont(ofSize: 13.0)
         noDataLabel.text          = str
         noDataLabel.textColor     = UIColor.lightGray
         noDataLabel.backgroundColor = UIColor.white
         noDataLabel.textAlignment = .center
-         let noDataLabel1: UIView     = UIView(frame: CGRect(x: 0, y: 0, width: fr.size.width, height: fr.size.height))
+        let noDataLabel1: UIView     = UIView(frame: CGRect(x: 0, y: 0, width: fr.size.width, height: fr.size.height))
         noDataLabel1.addSubview(noDataLabel)
         return noDataLabel1
     }
     func backgroundpostapi(url:String,maindict:Dictionary<String,Any>, withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
     {
-        
+        let headers = ["lang": getLanguage()]
         let mainurl = "\(Constant_Url.Url)\(url)"
-        Alamofire.request(mainurl, method: .post, parameters: maindict, encoding: JSONEncoding.default)
+        Alamofire.request(mainurl, method: .post, parameters: maindict, encoding: JSONEncoding.default,headers:headers)
             .responseJSON { response in
                 if response.result.value != nil
                 {
@@ -326,10 +399,11 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     }
     func postapi(url:String,maindict:Dictionary<String,Any>, withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
     {
-    
+        
         MBProgressHUD.showAdded(to: self.view, animated: true)
+        let headers = ["lang": getLanguage()]
         let mainurl = "\(Constant_Url.Url)\(url)"
-        Alamofire.request(mainurl, method: .post, parameters: maindict, encoding: JSONEncoding.default)
+        Alamofire.request(mainurl, method: .post, parameters: maindict, encoding: JSONEncoding.default,headers:headers)
             .responseJSON { response in
                 MBProgressHUD.hide(for: self.view, animated: true)
                 if response.result.value != nil
@@ -342,8 +416,8 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
                     else if response.response?.statusCode ?? 0 == 400 && JSON["errors"] != nil && ((JSON["errors"] as? [String])?.count != 0){
                         if JSON["errors"] is String
                         {
-                        self.showAlertWithTitle(title: Constant_String.APP_NAME, string: (JSON["errors"] as! String))
-                        callback([:])
+                            self.showAlertWithTitle(title: Constant_String.APP_NAME, string: (JSON["errors"] as! String))
+                            callback([:])
                         }
                         else
                         {
@@ -352,7 +426,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
                         }
                     }
                     else {
-
+                        
                         self.showAlertWithTitle(title: Constant_String.APP_NAME, string: "Server Error")
                         callback([:])
                     }
@@ -369,8 +443,9 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     func putapi(url:String,maindict:Dictionary<String,Any>, withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
     {
         MBProgressHUD.showAdded(to: self.view, animated: true)
+        let headers = ["lang": getLanguage()]
         let mainurl = "\(Constant_Url.Url)\(url)"
-        Alamofire.request(mainurl, method: .put, parameters: maindict, encoding: JSONEncoding.default)
+        Alamofire.request(mainurl, method: .put, parameters: maindict, encoding: JSONEncoding.default,headers:headers)
             .responseJSON { response in
                 MBProgressHUD.hide(for: self.view, animated: true)
                 if response.result.value != nil
@@ -402,9 +477,9 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     func getapi(url:String, withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
     {
         MBProgressHUD.showAdded(to: self.view, animated: true)
-
+        let headers = ["lang": getLanguage()]
         let mainurl = "\(Constant_Url.Url)\(url)"
-        Alamofire.request(mainurl, method: .get, parameters: nil, encoding: JSONEncoding.default)
+        Alamofire.request(mainurl, method: .get, parameters: nil, encoding: JSONEncoding.default,headers:headers)
             .responseJSON { response in
                 MBProgressHUD.hide(for: self.view, animated: true)
                 if response.result.value != nil
@@ -435,16 +510,16 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     {
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-       
-        let headers = ["Content-Type": "multipart/form-data; charset=UTF-8","Accept": "application/json","Keep-Alive":"Connection"]
-       
+        
+        let headers = ["Content-Type": "multipart/form-data; charset=UTF-8","Accept": "application/json","Keep-Alive":"Connection","lang": getLanguage()]
+        
         let URL = try! URLRequest(url: "\(Constant_Url.Url)\(url)", method: .post, headers: headers)
         Alamofire.upload(multipartFormData: { (multipartFormData) in
-           
-           
-                if let tempimage = imageValue.jpegData(compressionQuality: 1){
-                    multipartFormData.append(tempimage, withName: imageKey, fileName: "pic.jpeg", mimeType: "image/jpeg")
-                }
+            
+            
+            if let tempimage = imageValue.jpegData(compressionQuality: 1){
+                multipartFormData.append(tempimage, withName: imageKey, fileName: "pic.jpeg", mimeType: "image/jpeg")
+            }
             maindict.map({ (a:String,b:Any) -> Bool in
                 multipartFormData.append((b as! String).data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!, withName: a)
                 return true
@@ -463,7 +538,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
                 
                 upload.responseJSON { response in
                     MBProgressHUD.hide(for: self.view, animated: true)
-                
+                    
                     if response.result.value != nil
                     {
                         let JSON = (response.result.value as! Dictionary<String,Any>).dictionaryByReplacingNullsWithBlanks()
@@ -486,45 +561,175 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
                         self.showAlertWithTitle(title: Constant_String.APP_NAME, string: "Connection Error")
                         callback([:])
                     }
+                    
+                    
+                }
                 
-        
-            }
-            
-               
+                
             case .failure(_):
                 MBProgressHUD.hide(for: self.view, animated: true)
                 callback([:])
             }}
     }
-    func uploadmultipleimageapi(url:String,maindict:Dictionary<String,Any>,imageKey:[String],imageValue:[UIImage], withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
+    func uploadmultipleimageapi1(url:String, withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
     {
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         
-        let headers = ["Content-Type": "multipart/form-data; charset=UTF-8","Accept": "application/json","Keep-Alive":"Connection"]
+        let headers = ["Content-Type": "multipart/form-data; charset=UTF-8","Accept": "application/json","Keep-Alive":"Connection","lang": getLanguage()]
+        
+        let URL = try! URLRequest(url: "\(Constant_Url.Url)\(url)", method: .post, headers: headers)
+        
+        Alamofire.upload(multipartFormData: { (multipartFormData1) in
+            var a = "lottery[0]"
+            var b =  ["lottery_id": "2",
+                      "lottery_sign_image": UIImage(named: "ic_loto.png")!.pngData()!.base64EncodedString(),
+                      "lottery_front_image": UIImage(named: "ic_loto.png")!.jpegData(compressionQuality: 1)!.base64EncodedString(),
+                      "lottery_back_image": UIImage(named: "ic_loto.png")!.jpegData(compressionQuality: 1)!.base64EncodedString(),
+                      "lottery_detail": [
+                        [
+                            "lottery_number": "12 34 56 56 56 56",
+                            "share": "5",
+                            "day": "5-7",
+                            "club": "join",
+                            "join_club": "2",
+                            "overseas": "0"
+                        ],
+                        [
+                            "lottery_number": "09 87 65 43 43 43",
+                            "share": "10.2",
+                            "day": "5-7",
+                            "club": "new",
+                            "new_club": [
+                                "limit": "50",
+                                "unfollow": "15 16 17",
+                                "follow": "10 11 12"
+                            ],
+                            "overseas": "1",
+                            "overseas_value": "2134"
+                        ]
+                ]
+                ] as [String : Any]
+            do{
+                let jsonData = try JSONSerialization.data(withJSONObject: b, options: [.prettyPrinted])
+                multipartFormData1.append(jsonData, withName: a)
+            }
+            catch let parseError {
+                print("json serialization error: \(parseError)")
+                
+            }
+            a = "lottery[1]"
+            b =  ["lottery_id": "2",
+                  "lottery_sign_image": UIImage(named: "ic_loto.png")!.jpegData(compressionQuality: 1)!.base64EncodedString(),
+                  "lottery_front_image": UIImage(named: "ic_loto.png")!.jpegData(compressionQuality: 1)!.base64EncodedString(),
+                  "lottery_back_image": UIImage(named: "ic_loto.png")!.jpegData(compressionQuality: 1)!.base64EncodedString(),
+                  "lottery_detail": [
+                    [
+                        "lottery_number": "12 34 56 56 56 56",
+                        "share": "5",
+                        "day": "5-7",
+                        "club": "join",
+                        "join_club": "2",
+                        "overseas": "0"
+                    ],
+                    [
+                        "lottery_number": "09 87 65 43 43 43",
+                        "share": "10.2",
+                        "day": "5-7",
+                        "club": "new",
+                        "new_club": [
+                            "limit": "50",
+                            "unfollow": "15 16 17",
+                            "follow": "10 11 12"
+                        ],
+                        "overseas": "1",
+                        "overseas_value": "2134"
+                    ]
+                ]
+                ] as [String : Any]
+            do{
+                let jsonData = try JSONSerialization.data(withJSONObject: b, options: [.prettyPrinted])
+                multipartFormData1.append(jsonData, withName: a)
+            }
+            catch let parseError {
+                print("json serialization error: \(parseError)")
+                
+            }
+            multipartFormData1.append("94".data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!, withName: "user_id")
+        }, with:URL)
+        { (result) in
+            print(result)
+            switch result {
+            case .success(let upload, _, _):
+                
+                upload.uploadProgress(closure: { (progress) in
+                    //Print progress
+                })
+                
+                upload.responseJSON { response in
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                    
+                    if response.result.value != nil
+                    {
+                        let JSON = (response.result.value as! Dictionary<String,Any>).dictionaryByReplacingNullsWithBlanks()
+                        print(JSON)
+                        if response.response?.statusCode ?? 0 == 200 {
+                            callback(JSON)
+                        }
+                        else if response.response?.statusCode ?? 0 == 400 && JSON["errors"] != nil && ((JSON["errors"] as? [String])?.count != 0){
+                            self.showAlertWithTitle(title: Constant_String.APP_NAME, string: (JSON["errors"] as! String) )
+                            callback([:])
+                        }
+                        else {
+                            
+                            self.showAlertWithTitle(title: Constant_String.APP_NAME, string: "Server Error")
+                            callback([:])
+                        }
+                    }
+                    else
+                    {
+                        self.showAlertWithTitle(title: Constant_String.APP_NAME, string: "Connection Error")
+                        callback([:])
+                    }
+                    
+                    
+                }
+                
+                
+            case .failure(_):
+                MBProgressHUD.hide(for: self.view, animated: true)
+                callback([:])
+            }}
+    }
+    func uploadmultipleimageapi(url:String,maindict:[String:Any], withcalllback callback: @escaping (_ response: Dictionary<String,Any>) -> Void)
+    {
+        
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        
+        let headers = ["Content-Type": "multipart/form-data; charset=UTF-8","Accept": "application/json","Keep-Alive":"Connection","lang": getLanguage()]
         
         let URL = try! URLRequest(url: "\(Constant_Url.Url)\(url)", method: .post, headers: headers)
         Alamofire.upload(multipartFormData: { (multipartFormData) in
             
-            for i in 0..<imageKey.count
-            {
-            if let tempimage = imageValue[i].jpegData(compressionQuality: 1){
-                multipartFormData.append(tempimage, withName: imageKey[i], fileName: "pic\(i).jpeg", mimeType: "image/jpeg")
-            }
-            }
-            maindict.map({ (a:String,b:Any) -> Bool in
-                if b is String
+            _ = maindict.map({ (a:String,b:Any) -> Bool in
+                if a.contains("image")
                 {
-                multipartFormData.append((b as! String).data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!, withName: a)
+                    if let tempimage = (b as! UIImage).jpegData(compressionQuality: 1){
+                        multipartFormData.append(tempimage, withName: a, fileName: "pic\(a).jpeg", mimeType: "image/jpeg")
+                    }
+                }
+                else if b is String
+                {
+                    multipartFormData.append((b as! String).data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!, withName: a)
                 }
                 else{
                     do{
-                    let jsonData = try JSONSerialization.data(withJSONObject: b, options: [.prettyPrinted])
-                    multipartFormData.append(jsonData, withName: a)
+                        let jsonData = try JSONSerialization.data(withJSONObject: b, options: [.prettyPrinted])
+                        multipartFormData.append(jsonData, withName: a)
                     }
                     catch let parseError {
                         print("json serialization error: \(parseError)")
-                       
+                        
                     }
                 }
                 return true
@@ -594,6 +799,12 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
     }
     func convertDatehhMMss(str:String) -> String
     {
+        if str == ""
+        {
+            return ""
+        }
+        else
+        {
         let df:DateFormatter = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let hourMinuteSecond: Set<Calendar.Component> = [.hour, .minute, .second]
@@ -605,7 +816,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         
         
         return "\(hours):\(minutes):\(seconds)"
-       
+        }
     }
     func convertDatehh(str:String) -> String
     {
@@ -614,7 +825,7 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         let hourMinuteSecond: Set<Calendar.Component> = [.hour, .minute, .second]
         let difference = NSCalendar.current.dateComponents(hourMinuteSecond, from:df.date(from: str)! , to: Date());
         
-       
+        
         let hours = difference.hour ?? 0
         
         
@@ -629,10 +840,9 @@ class BaseViewController: UIViewController,UITextFieldDelegate {
         else
         {
             let num:Float = (Float(s.replacingOccurrences(of: ",", with: "")))!
-            let thousandNum = num/1000
             let millionNum = num/1000000
-           
-                return String(format: "$%.2fM", millionNum)
+            
+            return String(format: "$%.2fM", millionNum)
             
         }
     }

@@ -191,7 +191,7 @@ extension FilterVC: UICollectionViewDataSource, UICollectionViewDelegate, UIColl
         self.cltView.reloadData()
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize.init(width:( collectionView.bounds.width / 2), height: 55)
+        return CGSize.init(width:( collectionView.bounds.width), height: 55)
     }
 }
 

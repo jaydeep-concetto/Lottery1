@@ -13,23 +13,11 @@ import UIKit
 
 //MARK: cell for HomeBottom list
 
-class cellHomeBottomList: UITableViewCell {
-    
-    @IBOutlet weak var imgMainView: UIImageView!
-    @IBOutlet var lblClubWon: UILabel!
-    @IBOutlet var lblJoined: UILabel!
-    @IBOutlet var lblDeadLine: UILabel!
-    @IBOutlet var imgShape: UIImageView!
-    
-    
-}
+
 
 //MAR: headerCell for HomeBottomList
 
-class cellHomeBottomHeader: UITableViewCell {
-    
-    
-}
+
 
 
 //MARK: cell for homeView cell

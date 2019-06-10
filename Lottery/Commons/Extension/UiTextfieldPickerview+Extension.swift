@@ -98,7 +98,6 @@ class MyPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelegate 
                 self.pickerTextField.isEnabled = false
             }
         }
-        self.selectionHandler = selectionHandler
 
         if self.pickerTextField.text != nil && self.selectionHandler != nil {
             if let index = self.pickerData.index(where: { (dict) -> Bool in
@@ -108,6 +107,14 @@ class MyPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelegate 
                 self.selectRow(index, inComponent: 0, animated: false)
             }
         }
+        else if self.pickerTextField.text != nil {
+            if let index = self.pickerData.index(where: { (dict) -> Bool in
+                return dict[keyForValue] as! String == self.pickerTextField.text!
+            }) {
+                self.selectRow(index, inComponent: 0, animated: false)
+            }
+        }
+        self.selectionHandler = selectionHandler
 
     }
     
@@ -123,12 +130,12 @@ class MyPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelegate 
     // the selected option.
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         pickerTextField.text = pickerData[row][keyForValue] as? String
-        if self.pickerTextField.text != nil && self.selectionHandler != nil {
-            if let index = self.pickerData.index(where: { (dict) -> Bool in
-                return dict[keyForValue] as! String == self.pickerTextField.text!
-            }) {
-                selectionHandler!(self.pickerData[index])
-            }
-        }
+//        if self.pickerTextField.text != nil && self.selectionHandler != nil {
+//            if let index = self.pickerData.index(where: { (dict) -> Bool in
+//                return dict[keyForValue] as! String == self.pickerTextField.text!
+//            }) {
+//                selectionHandler!(self.pickerData[index])
+//            }
+//        }
     }
 }
